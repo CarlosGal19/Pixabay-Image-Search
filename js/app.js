@@ -4,6 +4,8 @@ const results=document.querySelector('#result');
 const pagination=document.querySelector('#pagination');
 
 const recordsPerPage=40;
+let totalPages;
+let iterator;
 let currentPage=1;
 
 document.addEventListener('DOMContentLoaded', ()=>{
@@ -54,6 +56,7 @@ function getImages() {
             return response.json();
         })
         .then(data => {
+            totalPages= calculatePages(data.totalHits);
             showImages(data.hits);
         })
 }
@@ -79,6 +82,46 @@ function showImages(images) {
             </div>
         `;
     });
+
+    printPaginator();
+
+}
+
+function calculatePages(total) {
+    return parseInt(Math.ceil(total/recordsPerPage));
+}
+
+function *generatorPages(totalPages){
+    for (let i = 1; i <= totalPages; i++) {
+        yield i;
+    }
+}
+
+function printPaginator(){
+
+    cleanHTML(pagination);
+
+    iterator=generatorPages(totalPages);
+
+    while (true) {
+        const {value, done} = iterator.next();
+
+        if (done) return;
+
+        const button = document.createElement('a');
+        button.href='#';
+        button.dataset=value;
+        button.textContent=value;
+        button.classList.add('next', 'bg-yellow-400', 'px-4', 'py-1', 'mr-2', 'font-bold', 'mb-4', 'rounded');
+
+        button.onclick=()=>{
+            currentPage=value;
+            getImages();
+        }
+
+        pagination.appendChild(button);
+    }
+
 }
 
 function cleanHTML(spaceToClean){

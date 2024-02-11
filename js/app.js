@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     form.addEventListener('submit', validateForm);
 })
 
+// It validated is the form was filled
 function validateForm(e){
     e.preventDefault();
 
@@ -26,6 +27,7 @@ function validateForm(e){
     getImages();
 }
 
+// It shows an alert if the form is not filled
 function showAlert(message){
 
     const alertExist=form.querySelector('.alert');
@@ -46,6 +48,7 @@ function showAlert(message){
     }
 }
 
+// Function that consults the pixabay API
 function getImages() {
 
     key='42078605-dd3871e8b026d3fb9e11d4ff2';
@@ -56,6 +59,7 @@ function getImages() {
             return response.json();
         })
         .then(data => {
+            // It calculates the number of pages that the paginator will show, based on the number of total hits
             totalPages= calculatePages(data.totalHits);
             showImages(data.hits);
         })
@@ -91,12 +95,14 @@ function calculatePages(total) {
     return parseInt(Math.ceil(total/recordsPerPage));
 }
 
+// Generator of pages of paginator
 function *generatorPages(totalPages){
     for (let i = 1; i <= totalPages; i++) {
         yield i;
     }
 }
 
+// Paginator is created and shown in DOM
 function printPaginator(){
 
     cleanHTML(pagination);
@@ -105,7 +111,7 @@ function printPaginator(){
 
     while (true) {
         const {value, done} = iterator.next();
-
+        // If the iterator has finished, the generation stops
         if (done) return;
 
         const button = document.createElement('a');

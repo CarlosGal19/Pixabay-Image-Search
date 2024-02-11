@@ -57,3 +57,32 @@ function getImages() {
             showImages(data.hits);
         })
 }
+
+function showImages(images) {
+
+    cleanHTML(results);
+
+    images.forEach(element => {
+        const {previewURL, tags, likes, views, largeImageURL} = element;
+
+        results.innerHTML += `
+            <div class="w-1/2 md:w-1/3 lg:w-1/4 p-3 mb-4">
+                <div class="bg-white">
+                    <img src="${previewURL}" class="w-full" alt="${tags.toUpperCase()}">
+                    <div class="p-4">
+                        <p class="font-bold"> ${likes} <span class="font-light"> likes </span> </p>
+                        <p class="font-bold"> ${views} <span class="font-light"> views </span> </p>
+                        <a href="${largeImageURL}" target="_blank" rel="noopener noreferrer"
+                        class="block w-full bg-blue-800 hover:bg-blue-500 text-white uppercase font-bold text-center rounded mt-5 p-1"> Show HD image </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function cleanHTML(spaceToClean){
+    while(spaceToClean.firstChild){
+        spaceToClean.removeChild(spaceToClean.firstChild);
+    }
+}

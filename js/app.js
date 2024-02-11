@@ -3,6 +3,9 @@ const form=document.querySelector('#form');
 const results=document.querySelector('#result');
 const pagination=document.querySelector('#pagination');
 
+const recordsPerPage=40;
+let currentPage=1;
+
 document.addEventListener('DOMContentLoaded', ()=>{
 
     form.addEventListener('submit', validateForm);
@@ -39,4 +42,18 @@ function showAlert(message){
             alert.remove();
         }, 3000);
     }
+}
+
+function getImages() {
+
+    key='42078605-dd3871e8b026d3fb9e11d4ff2';
+    url=`https://pixabay.com/api/?key=${key}&q=${inputText.value}&per_page=${recordsPerPage}&page=${currentPage}`
+
+    fetch(url)
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            showImages(data.hits);
+        })
 }

@@ -1,23 +1,23 @@
-const inputText=document.querySelector('#term');
-const form=document.querySelector('#form');
-const results=document.querySelector('#result');
-const pagination=document.querySelector('#pagination');
+const inputText = document.querySelector('#term');
+const form = document.querySelector('#form');
+const results = document.querySelector('#result');
+const pagination = document.querySelector('#pagination');
 
-const recordsPerPage=40;
+const recordsPerPage = 40;
 let totalPages;
 let iterator;
-let currentPage=1;
+let currentPage = 1;
 
-document.addEventListener('DOMContentLoaded', ()=>{
+document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', validateForm);
 })
 
 // It validated is the form was filled
-function validateForm(e){
+function validateForm(e) {
     e.preventDefault();
 
-    text=inputText.value;
+    text = inputText.value;
 
     if (!text) {
         showAlert('Please, type what type of images you want to search')
@@ -28,14 +28,14 @@ function validateForm(e){
 }
 
 // It shows an alert if the form is not filled
-function showAlert(message){
+function showAlert(message) {
 
-    const alertExist=form.querySelector('.alert');
+    const alertExist = form.querySelector('.alert');
 
     if (!alertExist) {
-        const alert=document.createElement('p');
+        const alert = document.createElement('p');
         alert.classList.add('bg-red-100', 'border-red-400', 'text-red-700', 'px-4', 'py-3', 'rounded', 'mx-auto', 'mt-6',
-        'text-center', 'max-w-lg', 'alert');
+            'text-center', 'max-w-lg', 'alert');
         alert.innerHTML = `
             <strong class="font-bold"> ERROR! </strong>
             <span class="block sm:inline"> ${message} </span>
@@ -51,8 +51,8 @@ function showAlert(message){
 // Function that consults the pixabay API
 function getImages() {
 
-    key='42078605-dd3871e8b026d3fb9e11d4ff2';
-    url=`https://pixabay.com/api/?key=${key}&q=${inputText.value}&per_page=${recordsPerPage}&page=${currentPage}`
+    key = '42078605-dd3871e8b026d3fb9e11d4ff2';
+    url = `https://pixabay.com/api/?key=${key}&q=${inputText.value}&per_page=${recordsPerPage}&page=${currentPage}`
 
     fetch(url)
         .then(response => {
@@ -60,7 +60,7 @@ function getImages() {
         })
         .then(data => {
             // It calculates the number of pages that the paginator will show, based on the number of total hits
-            totalPages= calculatePages(data.totalHits);
+            totalPages = calculatePages(data.totalHits);
             showImages(data.hits);
         })
 }
@@ -70,7 +70,7 @@ function showImages(images) {
     cleanHTML(results);
 
     images.forEach(element => {
-        const {previewURL, tags, likes, views, largeImageURL} = element;
+        const { previewURL, tags, likes, views, largeImageURL } = element;
 
         results.innerHTML += `
             <div class="w-1/2 md:w-1/3 lg:w-1/4 p-3 mb-4">
@@ -92,36 +92,36 @@ function showImages(images) {
 }
 
 function calculatePages(total) {
-    return parseInt(Math.ceil(total/recordsPerPage));
+    return parseInt(Math.ceil(total / recordsPerPage));
 }
 
 // Generator of pages of paginator
-function *generatorPages(totalPages){
+function* generatorPages(totalPages) {
     for (let i = 1; i <= totalPages; i++) {
         yield i;
     }
 }
 
 // Paginator is created and shown in DOM
-function printPaginator(){
+function printPaginator() {
 
     cleanHTML(pagination);
 
-    iterator=generatorPages(totalPages);
+    iterator = generatorPages(totalPages);
 
     while (true) {
-        const {value, done} = iterator.next();
+        const { value, done } = iterator.next();
         // If the iterator has finished, the generation stops
         if (done) return;
 
         const button = document.createElement('a');
-        button.href='#';
-        button.dataset=value;
-        button.textContent=value;
+        button.href = '#';
+        button.dataset = value;
+        button.textContent = value;
         button.classList.add('next', 'bg-yellow-400', 'px-4', 'py-1', 'mr-2', 'font-bold', 'mb-4', 'rounded');
 
-        button.onclick=()=>{
-            currentPage=value;
+        button.onclick = () => {
+            currentPage = value;
             getImages();
         }
 
@@ -130,8 +130,8 @@ function printPaginator(){
 
 }
 
-function cleanHTML(spaceToClean){
-    while(spaceToClean.firstChild){
+function cleanHTML(spaceToClean) {
+    while (spaceToClean.firstChild) {
         spaceToClean.removeChild(spaceToClean.firstChild);
     }
 }
